@@ -1,10 +1,11 @@
 import { useState } from "react";
+import axios from "axios";
 function Signup() {
   const [name, setName] = useState("");
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 
-const handleSignup = (e) => {
+const handleSignup = async (e) => {
   e.preventDefault();
 
   if (!name || !email || !password) {
@@ -12,11 +13,28 @@ const handleSignup = (e) => {
     return;
   }
 
-  console.log("Signup Successful");
+ try {
 
-  console.log(name);
-  console.log(email);
-  console.log(password);
+  const response = await axios.post(
+    "http://localhost:5000/api/auth/signup",
+    {
+      name,
+      email,
+      password,
+    }
+  );
+
+  console.log(response.data);
+
+  alert("Signup Successful");
+
+} catch (error) {
+
+  console.log(error);
+
+  alert("Signup Failed");
+
+}
 };
   return (
     <div className="min-h-screen bg-black flex items-center justify-center">
