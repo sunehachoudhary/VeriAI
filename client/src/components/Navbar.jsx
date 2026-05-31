@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import { logout } from "../utils/auth";
+
 function Navbar() {
   return (
     <nav className="bg-black text-white px-8 py-4 flex justify-between items-center">
@@ -19,6 +21,15 @@ function Navbar() {
 
         <Link to="/upload">Upload</Link>
       </div>
+
+      <button
+onClick={()=>{
+logout();
+window.location.href="/login";
+}}
+>
+Logout
+</button>
 
     </nav>
   );

@@ -1,4 +1,22 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { isLoggedIn } from "../utils/auth";
+
+
 function Dashboard() {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+
+    if (!isLoggedIn()) {
+
+      navigate("/login");
+
+    }
+
+  }, []);
+  
   return (
     <div className="min-h-screen bg-black text-white p-10">
 
