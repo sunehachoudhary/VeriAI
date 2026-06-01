@@ -55,8 +55,12 @@ router.post("/signup", async (req, res) => {
 // =======================
 // LOGIN ROUTE
 // =======================
+
 router.post("/login", async (req, res) => {
   try {
+    // 🔍 DEBUG: check what frontend is sending
+    console.log("LOGIN BODY:", req.body);
+
     const { email, password } = req.body;
 
     // check missing fields
@@ -66,21 +70,25 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // find user
+    // find user in database
     const user = await User.findOne({ email });
+
+    console.log("USER FOUND:", user ? "YES" : "NO");
 
     if (!user) {
       return res.status(400).json({
-        message: "Invalid credentials",
+        message: "Invalid credentials (user not found)",
       });
     }
 
     // compare password
     const isMatch = await bcrypt.compare(password, user.password);
 
+    console.log("PASSWORD MATCH:", isMatch);
+
     if (!isMatch) {
       return res.status(400).json({
-        message: "Invalid credentials",
+        message: "Invalid credentials (wrong password)",
       });
     }
 
@@ -91,7 +99,8 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res.json({
+    // success response
+    return res.json({
       message: "Login successful",
       token,
       user: {
@@ -101,13 +110,13 @@ router.post("/login", async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
+    console.log("LOGIN ERROR:", error);
+
+    return res.status(500).json({
       message: "Server Error",
     });
   }
 });
-
 // =======================
 // EXPORT ROUTER
 // =======================

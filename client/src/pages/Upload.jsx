@@ -1,4 +1,43 @@
+import { useState } from "react";
+import axios from "axios";
 function Upload() {
+
+  const [file,setFile]=useState(null);
+
+  
+const handleUpload = async () => {
+
+  if (!file) {
+    alert("Select a file first");
+    return;
+  }
+
+  const formData = new FormData();
+
+  formData.append("file", file);
+
+  try {
+
+    const res = await axios.post(
+      "http://localhost:5000/api/upload/analyze",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log(res.data);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+
+};
+
   return (
     <div className="min-h-screen bg-black flex justify-center items-center">
 
@@ -12,13 +51,13 @@ function Upload() {
           Drag & Drop Files Here
         </div>
 
-        <input
-          type="file"
-          className="text-white mb-6"
-        />
+        <input type="file" onChange={(e)=>
+        setFile(e.target.files[0])
+          }/>
+          {file && <p>{file.name}</p>}
 
-        <button className="w-full bg-white text-black py-4 rounded-xl font-bold">
-          Analyze with AI
+        <button onClick={handleUpload}>
+          Analyze
         </button>
 
       </div>
