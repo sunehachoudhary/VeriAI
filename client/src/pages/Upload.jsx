@@ -28,7 +28,15 @@ const handleUpload = async () => {
       }
     );
 
-    console.log(res.data);
+   alert(
+`Trust Score:
+${res.data.trustScore}
+`
+);
+
+console.log(
+res.data
+);
 
   } catch (err) {
 

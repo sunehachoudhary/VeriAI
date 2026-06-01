@@ -1,8 +1,7 @@
 const express = require("express");
 const multer = require("multer");
-
+const analyzeFile = require("../services/analyze");
 const router = express.Router();
-
 const storage = multer.diskStorage({
 
 destination:(req,file,cb)=>{
@@ -21,27 +20,26 @@ Date.now()+"-"+file.originalname
 const upload = multer({ storage });
 
 router.post(
-"/analyze",
-upload.single("file"),
+  "/analyze",
+  upload.single("file"),
 
-(req,res)=>{
+  (req, res) => {
 
-console.log(req.file);
+    const result = analyzeFile();
 
-if(!req.file){
-return res.status(400).json({
-message:"No file uploaded"
-});
-}
+    res.json({
 
-res.json({
+      message: "Analysis complete",
 
-message:"File uploaded successfully",
+      filename: req.file.filename,
 
-filename:req.file.filename
+      trustScore: result.trustScore,
 
-});
+      riskLevel: result.riskLevel,
 
-});
+    });
 
-module.exports = router; 
+  }
+);
+
+module.exports = router;
