@@ -2,8 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 function Upload() {
 
-  const [file,setFile]=useState(null);
-
+const [file,setFile]=useState(null);
+const [result,setResult]=useState(null);
   
 const handleUpload = async () => {
 
@@ -28,15 +28,7 @@ const handleUpload = async () => {
       }
     );
 
-   alert(
-`Trust Score:
-${res.data.trustScore}
-`
-);
-
-console.log(
-res.data
-);
+   setResult(res.data);
 
   } catch (err) {
 
@@ -67,6 +59,33 @@ res.data
         <button onClick={handleUpload}>
           Analyze
         </button>
+
+        {/*Result UI */}
+        {result && (
+
+<div className="mt-8 bg-gray-900 p-8 rounded-2xl text-white">
+
+<h2 className="text-3xl font-bold mb-4">
+Analysis Result
+</h2>
+
+<p>
+Trust Score:
+<span className="font-bold">
+{result.trustScore}
+</span>
+</p>
+
+<p className="mt-2">
+Risk Level:
+<span className="font-bold">
+{result.riskLevel}
+</span>
+</p>
+
+</div>
+
+)}
 
       </div>
 

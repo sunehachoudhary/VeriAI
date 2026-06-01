@@ -24,24 +24,30 @@ function Dashboard() {
         AI Analytics Dashboard
       </h1>
 
-      <div className="grid grid-cols-3 gap-8">
+     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <div className="bg-gray-900 p-8 rounded-2xl">
-          <h2 className="text-4xl font-bold">1,240</h2>
-          <p className="text-gray-400 mt-2">Total Scans</p>
-        </div>
+<div className="bg-gray-900 p-6 rounded-xl">
+<h2 className="text-4xl font-bold">
+120
+</h2>
+<p>Total Scans</p>
+</div>
 
-        <div className="bg-gray-900 p-8 rounded-2xl">
-          <h2 className="text-4xl font-bold">342</h2>
-          <p className="text-gray-400 mt-2">AI Content</p>
-        </div>
+<div className="bg-gray-900 p-6 rounded-xl">
+<h2 className="text-4xl font-bold">
+84%
+</h2>
+<p>Avg Trust</p>
+</div>
 
-        <div className="bg-gray-900 p-8 rounded-2xl">
-          <h2 className="text-4xl font-bold">91%</h2>
-          <p className="text-gray-400 mt-2">Average Trust</p>
-        </div>
+<div className="bg-gray-900 p-6 rounded-xl">
+<h2 className="text-4xl font-bold">
+7
+</h2>
+<p>High Risk</p>
+</div>
 
-      </div>
+</div>
 
     </div>
   );
