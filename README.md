@@ -4,7 +4,7 @@
 
 VeriAI is a full-stack MERN application designed to assess the trustworthiness of content and streamline verification workflows. The platform enables users to submit content for verification, track verification reports, analyze trust metrics, and manage activities through an intuitive dashboard.
 
-## ✨ Feature
+## ✨ Features
 
 ### 🔐 Secure Authentication & Authorization
 
