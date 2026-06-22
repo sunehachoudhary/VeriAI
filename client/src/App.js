@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
+import TextVerification from './pages/TextVerification';
 
 function App() {
   return (
@@ -24,6 +25,9 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="/upload" element={<Upload />} />
+
+        <Route path="/verify-text" element={<TextVerification />} />
+
       </Routes>
 
     </BrowserRouter>
