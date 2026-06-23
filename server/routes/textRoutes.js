@@ -1,25 +1,40 @@
 const express = require("express");
+const analyzeText = require("../services/aiAnalysis");
+const TextAnalysis = require("../models/TextAnalysis");
 
-const analyzeText =
-require("../services/aiAnalysis");
+const router = express.Router();
 
-const router =
-express.Router();
+// Verify text
+router.post("/verify", async (req, res) => {
+  try {
+    const { text } = req.body;
 
-router.post(
-"/verify",
-(req,res)=>{
+    const result = await analyzeText(text);
 
-const { text } =
-req.body;
+    const savedAnalysis = new TextAnalysis({
+      text,
+      trustScore: result.trustScore,
+    });
 
-const result =
-analyzeText(text);
+    await savedAnalysis.save();
 
-res.json(result);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
-}
-);
+// Get history
+router.get("/history", async (req, res) => {
+  try {
+    const history = await TextAnalysis.find().sort({
+      createdAt: -1,
+    });
 
-module.exports =
-router;
+    res.json(history);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+module.exports = router;
