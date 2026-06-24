@@ -19,14 +19,24 @@ const handleUpload = async () => {
   try {
 
     const res = await axios.post(
-      "http://localhost:5000/api/upload/analyze",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+"http://localhost:5000/api/upload/analyze",
+formData,
+{
+headers:{
+Authorization:
+`Bearer ${
+localStorage.getItem(
+"token"
+)
+}`
+}
+}
+)
+    
+    
+    
+
+    
 
    setResult(res.data);
 
