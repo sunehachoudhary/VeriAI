@@ -174,6 +174,4 @@ npm run dev
 
 ## 👨‍💻 Author
 
-Developed with passion using the MERN Stack to create a secure, scalable, and intelligent content verification platform.
-
-### ⭐ If you found this project useful, consider giving it a star!
+Developed with passion using the MERN Stack to create a secure, scalable, and intelligent content verification 
