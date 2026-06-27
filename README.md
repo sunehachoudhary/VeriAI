@@ -1,4 +1,4 @@
-# VeriAI 🔍🤖
+# VeriAI 🔍
 
 **AI Trust & Verification Platform**
 
