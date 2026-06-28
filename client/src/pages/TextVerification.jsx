@@ -5,21 +5,22 @@ function TextVerification() {
   const [text, setText] = useState("");
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchHistory = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/text/history"
+      );
+
+      setHistory(Array.isArray(res.data) ? res.data : []);
+    } catch (error) {
+      console.error(error);
+      setHistory([]);
+    }
+  };
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:5000/api/text/history"
-        );
-
-        setHistory(Array.isArray(res.data) ? res.data : []);
-      } catch (error) {
-        console.error("History Error:", error);
-        setHistory([]);
-      }
-    };
-
     fetchHistory();
   }, []);
 
@@ -29,9 +30,11 @@ function TextVerification() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/text/verify",
+        "http://localhost:5000/api/ai/verify",
         {
           text,
         }
@@ -39,122 +42,209 @@ function TextVerification() {
 
       setResult(res.data);
 
-      // Refresh history
-      const historyRes = await axios.get(
-        "http://localhost:5000/api/text/history"
-      );
-
-      setHistory(
-        Array.isArray(historyRes.data)
-          ? historyRes.data
-          : historyRes.data.history || []
-      );
     } catch (error) {
-      console.error("Verification Error:", error);
-      console.error("Server Response:", error.response?.data);
+      console.error(error);
 
       alert(
         error.response?.data?.message ||
-          "Verification failed. Check the backend server."
+          "Verification failed."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-black text-white p-10">
-      <h1 className="text-4xl mb-6">Text Verification</h1>
+
+      <h1 className="text-4xl font-bold mb-8">
+        AI Text Verification
+      </h1>
 
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        className="w-full h-60 p-4 text-black rounded"
+        className="w-full h-60 p-4 rounded text-black"
         placeholder="Paste text here..."
       />
 
       <button
         onClick={handleVerify}
-        className="mt-4 bg-white text-black px-6 py-3 rounded"
+        disabled={loading}
+        className="mt-6 bg-white text-black px-6 py-3 rounded"
       >
-        Verify
+        {loading ? "Analyzing..." : "Verify"}
       </button>
 
       {result && (
-        <div className="mt-6 bg-gray-900 p-6 rounded-xl text-white">
-          <h2 className="text-2xl font-bold mb-4">
+
+        <div className="mt-8 bg-gray-900 p-6 rounded-xl">
+
+          <h2 className="text-3xl font-bold mb-6">
             Verification Result
           </h2>
 
-          <p>
-            Trust Score:
-            <span className="font-bold ml-2">
-              {result.trustScore ?? "N/A"}
-            </span>
+          <p className="mb-2">
+            <strong>Trust Score:</strong>{" "}
+            {result.trustScore}
           </p>
 
-          <p>
-            Category:
-            <span className="ml-2">
-              {result.category ?? "N/A"}
-            </span>
+          <p className="mb-2">
+            <strong>Risk Level:</strong>{" "}
+            {result.riskLevel}
           </p>
 
-          <p>
-            Confidence:
-            <span className="ml-2">
-              {result.confidence ?? "N/A"}%
-            </span>
-          </p>
-
-          <p className="mt-2">
-            Explanation:
-            <span className="ml-2">
-              {result.explanation ?? "No explanation available"}
-            </span>
+          <p className="mb-2">
+            <strong>Confidence:</strong>{" "}
+            {result.confidence}%
           </p>
 
           <div className="mt-4">
-            <h3 className="font-bold mb-2">
-              Detected Flags
+
+            <h3 className="text-xl font-bold">
+              Summary
             </h3>
 
-            {Array.isArray(result.detectedFlags) &&
-            result.detectedFlags.length > 0 ? (
-              result.detectedFlags.map((flag, index) => (
-                <p key={index}>• {flag}</p>
-              ))
-            ) : (
-              <p>No flags detected.</p>
-            )}
+            <p className="mt-2">
+              {result.summary}
+            </p>
+
           </div>
+
+          <div className="mt-6">
+
+            <h3 className="text-xl font-bold">
+              Red Flags
+            </h3>
+
+            {result.redFlags &&
+            result.redFlags.length > 0 ? (
+
+              result.redFlags.map((flag, index) => (
+
+                <p key={index}>
+                  ⚠️ {flag}
+                </p>
+
+              ))
+
+            ) : (
+
+              <p>No red flags detected.</p>
+
+            )}
+
+          </div>
+
+          <div className="mt-6">
+
+            <h3 className="text-xl font-bold">
+              Recommendations
+            </h3>
+
+            {result.recommendations &&
+            result.recommendations.length > 0 ? (
+
+              result.recommendations.map(
+                (item, index) => (
+
+                  <p key={index}>
+                    ✅ {item}
+                  </p>
+
+                )
+              )
+
+            ) : (
+
+              <p>No recommendations.</p>
+
+            )}
+
+          </div>
+
         </div>
+
       )}
 
-      <div className="mt-10">
-        <h2 className="text-2xl mb-4">
+      <div className="mt-12">
+
+        <h2 className="text-3xl font-bold mb-6">
           Previous Verifications
         </h2>
 
         {history.length === 0 ? (
+
           <p>No verification history found.</p>
+
         ) : (
+
           history.map((item) => (
+
             <div
               key={item._id}
-              className="border p-4 mb-2 rounded"
+              className="bg-gray-900 rounded-lg p-5 mb-5"
             >
-              <p>{item.text}</p>
 
               <p>
-                Trust Score: {item.trustScore}
+                <strong>Text:</strong>
               </p>
 
-              {item.category && (
-                <p>Category: {item.category}</p>
+              <p className="mb-4">
+                {item.text}
+              </p>
+
+              <p>
+                <strong>Trust Score:</strong>{" "}
+                {item.trustScore}
+              </p>
+
+              {item.riskLevel && (
+
+                <p>
+                  <strong>Risk Level:</strong>{" "}
+                  {item.riskLevel}
+                </p>
+
               )}
+
+              {item.confidence && (
+
+                <p>
+                  <strong>Confidence:</strong>{" "}
+                  {item.confidence}%
+                </p>
+
+              )}
+
+              {item.summary && (
+
+                <p className="mt-3">
+                  <strong>Summary:</strong>
+                  <br />
+                  {item.summary}
+                </p>
+
+              )}
+
+              {item.createdAt && (
+
+                <p className="mt-4 text-sm text-gray-400">
+                  {new Date(
+                    item.createdAt
+                  ).toLocaleString()}
+                </p>
+
+              )}
+
             </div>
+
           ))
+
         )}
+
       </div>
+
     </div>
   );
 }

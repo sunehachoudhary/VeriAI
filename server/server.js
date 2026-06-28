@@ -12,16 +12,19 @@ const uploadRoutes=require("./routes/uploadRoutes");
 
 const textRoutes =require("./routes/textRoutes");
 
+const aiRoutes = require("./routes/aiRoutes");
 connectDB();
 const app = express();
-
+console.log("Gemini Key:", process.env.GEMINI_API_KEY);
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/upload",uploadRoutes);
+app.use("/api/ai",aiRoutes);
 app.get("/", (req, res) => {
   res.send("Backend Running");
 });
+
 
 
 const PORT = 5000;
