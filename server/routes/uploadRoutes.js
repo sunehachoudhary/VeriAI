@@ -1,9 +1,14 @@
 const express = require("express");
 const multer = require("multer");
-const analyzeFile = require("../services/analyze");
 const router = express.Router();
-const Analysis = require("../models/Analysis");
+
 const authMiddleware = require("../middleware/authMiddleware");
+const {
+  analyzeUpload,
+  getHistory,
+} = require("../controllers/uploadController");
+
+// Multer Storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -16,41 +21,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// =======================
+// ANALYZE ROUTE
+// =======================
 router.post(
   "/analyze",
   authMiddleware,
   upload.single("file"),
-
-  async (req, res) => {
-    const result = analyzeFile();
-
-    res.json({
-      message: "Analysis complete",
-      filename: req.file.filename,
-      trustScore: result.trustScore,
-      riskLevel: result.riskLevel,
-    });
-    const analysis = new Analysis({
-      user: req.user.id,
-
-      filename: req.file.filename,
-
-      trustScore: result.trustScore,
-
-      riskLevel: result.riskLevel,
-    });
-
-    await analysis.save();
-  },
+  analyzeUpload
 );
-router.get("/history", authMiddleware, async (req, res) => {
-  const history = await Analysis.find({
-    user: req.user.id,
-  }).sort({
-    createdAt: -1,
-  });
 
-  res.json(history);
-});
+// =======================
+// HISTORY ROUTE
+// =======================
+router.get(
+  "/history",
+  authMiddleware,
+  getHistory
+);
 
+// =======================
+// EXPORT ROUTER
+// =======================
 module.exports = router;

@@ -13,6 +13,8 @@ const uploadRoutes=require("./routes/uploadRoutes");
 const textRoutes =require("./routes/textRoutes");
 
 const aiRoutes = require("./routes/aiRoutes");
+
+const dashboardRoutes = require("./routes/dashboardRoutes");
 connectDB();
 const app = express();
 console.log("Gemini Key:", process.env.GEMINI_API_KEY);
@@ -33,3 +35,5 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 app.use("/api/text", textRoutes );
+
+app.use("/api/dashboard" , dashboardRoutes);

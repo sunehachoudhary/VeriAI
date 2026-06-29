@@ -6,31 +6,25 @@ You are an AI Trust Verification Assistant.
 
 Analyze the following text.
 
-Return ONLY a valid JSON object.
+Return ONLY valid JSON.
 
-The JSON format must be exactly:
+Format:
 
 {
-  "trustScore": 85,
-  "riskLevel": "Low",
-  "confidence": 92,
-  "summary": "Short summary.",
+  "trustScore": number,
+  "riskLevel": "Low" | "Medium" | "High",
+  "summary": "...",
   "redFlags": [
-    "flag1",
-    "flag2"
+    "...",
+    "..."
   ],
   "recommendations": [
-    "recommendation1",
-    "recommendation2"
+    "...",
+    "..."
   ]
 }
 
-Do not add markdown.
-Do not add explanations.
-Do not use \`\`\`.
-
 Text:
-
 ${text}
 `;
 
@@ -61,7 +55,22 @@ ${text}
 
   raw = raw.substring(start, end + 1);
 
+ try {
   return JSON.parse(raw);
+} catch (error) {
+  console.error("JSON Parse Error:", error);
+  console.error("Raw Response:", raw);
+
+  return {
+    trustScore: 0,
+    riskLevel: "Unknown",
+    summary: "The AI returned an unexpected response.",
+    redFlags: [],
+    recommendations: [
+      "Please try again."
+    ]
+  };
+}
 };
 
 module.exports = analyzeWithAI;

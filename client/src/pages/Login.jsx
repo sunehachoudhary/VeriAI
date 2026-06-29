@@ -32,7 +32,7 @@ function Login() {
 
     localStorage.setItem(
       "token",
-      response.data.token
+      response.data.data.token
     );
 
     alert("Login Successful");

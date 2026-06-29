@@ -40,7 +40,7 @@ function TextVerification() {
         }
       );
 
-      setResult(res.data);
+      setResult(res.data.data);
 
     } catch (error) {
       console.error(error);
